@@ -28,10 +28,13 @@ QImage *text2image(QString str, const QFont &font, u32 fg, u32 bg)
 
   uchar* image_addr= img->bits();
   int w16 = img->bytesPerLine();
+  int img_w = img->width();
+  int cur_x=0;
   
 #if 1
   qDebug("=============================");
   qDebug("w16: %d", w16);
+  qDebug("w: %d", img_w);
   qDebug("h: %d", img->height());
 
   for (int y = 0 ; y < img->height() ; ++y)
@@ -49,10 +52,13 @@ QImage *text2image(QString str, const QFont &font, u32 fg, u32 bg)
           printf("*");
         else
           printf("|");
+        ++cur_x;
       }
 #endif
       ++image_addr;
     }
+    next_line:
+    cur_x = 0;
     printf("\n");
 
   
