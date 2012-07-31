@@ -1,6 +1,9 @@
 #include <QtGui/QApplication>
 #include <QtGui>
 
+#include <unistd.h>
+
+
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
