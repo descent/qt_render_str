@@ -62,28 +62,50 @@ QImage *text2image(QString str, const QFont &font, u32 fg, u32 bg)
   return img;
 }
 
+void usage(const char* fn)
+{
+  printf("%s -s font size -t str\n", fn);
+  printf("  ex:\n");
+  printf("    %s -s 30 -t \"abc\"\n", fn);
+  exit(-1);
+}
+
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
-  QStringList args = app.arguments();
+  int size=20;
+  char *cstr = "A";
+  int opt;
+  QString fam = "FreeMono";
 
-  QString fp("./mmadplayer.xml");
-
-  if (args.size() > 2)
+  while ((opt = getopt(argc, argv, "f:t:s:h?")) != -1)
   {
-    if (args.at(1) == "-f")
+    switch (opt)
     {
-      fp = args.at(2);
+      case 's':
+        //translator_fp = QString(optarg);
+        size = strtol(optarg, 0, 10);
+        break;
+      case 't':
+        cstr = optarg;
+        break;
+      case 'f':
+        fam = optarg;
+        break;
+      case 'h':
+      case '?':
+      default:
+        usage(argv[0]);
+        break;
     }
-
   }
-  qDebug() << "fp:" << fp;
 
 
   //QString str=QString::fromUtf8("懷藝測試ABCDE");
-  QString str=QString::fromUtf8("A");
+  QString str=QString::fromUtf8(cstr);
   
-  QImage *image = text2image(str, QFont("FreeMono", 20), Qt::yellow, Qt::black);
+  QImage *image = text2image(str, QFont(fam, size), Qt::yellow, Qt::black);
 
   return app.exec();
 }
+
