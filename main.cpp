@@ -26,12 +26,12 @@ QImage *text2image(QString str, const QFont &font, u32 fg, u32 bg)
   painter.setFont(font);
   painter.drawText(-text_rect_.x(), -text_rect_.y(), str);
 
+#if 0
   uchar* image_addr= img->bits();
   int w16 = img->bytesPerLine();
   int img_w = img->width();
   int cur_x=0;
   
-#if 1
   qDebug("=============================");
   qDebug("w16: %d", w16);
   qDebug("w: %d", img_w);
@@ -66,6 +66,54 @@ QImage *text2image(QString str, const QFont &font, u32 fg, u32 bg)
 #endif
 
   return img;
+}
+#define RAW_DATA 1
+#define RENDER_TEXT 2
+void print_mono_img(const QImage *img, int type)
+{
+  const uchar* image_addr= img->bits();
+  int w16 = img->bytesPerLine();
+  int img_w = img->width();
+  int cur_x=0;
+#if 1
+  qDebug("=============================");
+  qDebug("w: %d", img_w);
+  qDebug("static int wb = %d;", w16);
+  qDebug("static int hb = %d;", img->height());
+  printf("u8 str[]=\n");
+  printf("{\n");
+
+  for (int y = 0 ; y < img->height() ; ++y)
+  {    
+    for (int x = 0 ; x < w16 ; ++x)
+    { 
+      u8 c = *image_addr;
+          
+      if (type==RAW_DATA)
+        printf("%#5x,", *image_addr);
+     else
+     {
+
+      for (int i=7 ; i>=0 ; --i)
+      {
+        if (((c >> i) & 0x1) == 1)
+          printf("*");
+        else
+          printf("|");
+        ++cur_x;
+      }
+
+      }
+      ++image_addr;
+    }
+    next_line:
+    cur_x = 0;
+    printf("\n");
+
+  
+  } 
+#endif
+  printf("};\n");
 }
 
 void usage(const char* fn)
@@ -111,6 +159,8 @@ int main(int argc, char *argv[])
   QString str=QString::fromUtf8(cstr);
   
   QImage *image = text2image(str, QFont(fam, size), Qt::yellow, Qt::black);
+  print_mono_img(image, RENDER_TEXT);
+  print_mono_img(image, RAW_DATA);
 
   return app.exec();
 }
