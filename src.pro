@@ -1,5 +1,3 @@
-QT       += core gui xml 
-
 TEMPLATE = app
 
 SOURCES += main.cpp
