@@ -18,7 +18,7 @@ QImage *text2image(QString str, const QFont &font, u32 fg, u32 bg)
 {
   //f.setPointSize(font_size);
 
-  qDebug() << "str: " << str;
+  //printf("str: %s\n", str);
   QFontMetrics fm(font);
 
   QRect text_rect_ = fm.boundingRect(str);
@@ -85,10 +85,10 @@ void print_mono_img(const QImage *img, int type)
   int img_w = img->width();
   int cur_x=0;
 #if 1
-  qDebug("=============================");
-  qDebug("w: %d", img_w);
-  qDebug("static int wb = %d;", w16);
-  qDebug("static int hb = %d;", img->height());
+  printf("=============================\n");
+  printf("w: %d\n", img_w);
+  printf("static int wb = %d;\n", w16);
+  printf("static int hb = %d;\n", img->height());
   printf("u8 str[]=\n");
   printf("{\n");
 
