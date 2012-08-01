@@ -1,5 +1,11 @@
-#include <QtGui/QApplication>
-#include <QtGui>
+#include <QApplication>
+//#include <QCoreApplication>
+
+#include <QImage>
+#include <QFontMetrics>
+#include <QPainter>
+#include <QDebug>
+#include <QtGlobal> // for qVersion()
 
 #include <unistd.h>
 
@@ -124,12 +130,14 @@ void usage(const char* fn)
   printf("%s -s font size -t str\n", fn);
   printf("  ex:\n");
   printf("    %s -s 30 -t \"abc\"\n", fn);
+  printf("qt version: %s\n", qVersion());
   exit(-1);
 }
 
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
+  //QCoreApplication app(argc, argv);
   int size=20;
   char *cstr = "A";
   int opt;
@@ -165,6 +173,7 @@ int main(int argc, char *argv[])
   print_mono_img(image, RENDER_TEXT);
   print_mono_img(image, RAW_DATA);
 
-  return app.exec();
+  app.exit(0);
+  //return app.exec();
 }
 
