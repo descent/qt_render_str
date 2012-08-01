@@ -19,8 +19,8 @@ QImage *text2image(QString str, const QFont &font, u32 fg, u32 bg)
   qDebug() << "text_rect_:" << text_rect_;
   QImage *img = new QImage(text_rect_.width(), text_rect_.height(), QImage::Format_Mono);
   //QImage *img = new QImage(text_rect_.width(), text_rect_.height(), QImage::Format_RGB16);
-  img->fill(Qt::black);
-  //img->fill(bg);
+  //img->fill(Qt::black); 
+  img->fill(bg); 
   //img->fill(text_bg_);
 
   QPainter painter(img);
