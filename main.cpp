@@ -5,6 +5,7 @@
 #include <QFontMetrics>
 #include <QPainter>
 #include <QTextStream>
+#include <QTextCodec>
 #include <QFile>
 #include <QDebug>
 #include <QtGlobal> // for qVersion()
@@ -144,6 +145,8 @@ int main(int argc, char *argv[])
   int opt;
   QString str=QString::fromUtf8("A");
   QString fam = "FreeMono";
+  QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+
 
   while ((opt = getopt(argc, argv, "f:t:s:h?")) != -1)
   {
