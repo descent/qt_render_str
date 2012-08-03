@@ -4,6 +4,8 @@
 #include <QImage>
 #include <QFontMetrics>
 #include <QPainter>
+#include <QTextStream>
+#include <QFile>
 #include <QDebug>
 #include <QtGlobal> // for qVersion()
 
@@ -139,8 +141,8 @@ int main(int argc, char *argv[])
   QApplication app(argc, argv);
   //QCoreApplication app(argc, argv);
   int size=20;
-  char *cstr = "A";
   int opt;
+  QString str=QString::fromUtf8("A");
   QString fam = "FreeMono";
 
   while ((opt = getopt(argc, argv, "f:t:s:h?")) != -1)
@@ -152,11 +154,26 @@ int main(int argc, char *argv[])
         size = strtol(optarg, 0, 10);
         break;
       case 't':
-        cstr = optarg;
+        str=QString::fromUtf8(optarg);
         break;
       case 'f':
-        fam = optarg;
+      {
+        //fam = optarg;
+        QFile file(optarg); // file path
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+          QTextStream in(&file);
+          str=in.readAll();
+          qDebug() << "open file:" << optarg << "content: " << str;
+        }
+        else
+        {
+          qDebug() << file.errorString();
+        }
+
+
         break;
+      }
       case 'h':
       case '?':
       default:
@@ -167,7 +184,6 @@ int main(int argc, char *argv[])
 
 
   //QString str=QString::fromUtf8("懷藝測試ABCDE");
-  QString str=QString::fromUtf8(cstr);
   
   QImage *image = text2image(str, QFont(fam, size), Qt::yellow, Qt::black);
   print_mono_img(image, RENDER_TEXT);
