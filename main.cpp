@@ -17,6 +17,17 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
 
+QImage *fp2image(const QString &fp, u32 fg, u32 bg)
+{
+
+  QImage *img = new QImage(320, 200, QImage::Format_Indexed8);
+  img->fill(bg); 
+  if (img->load(fp))
+    qDebug() << fp << " load ok";
+
+  return img;
+}
+
 QImage *text2image(QString str, const QFont &font, u32 fg, u32 bg)
 {
   //f.setPointSize(font_size);
@@ -185,12 +196,21 @@ int main(int argc, char *argv[])
     }
   }
 
+  //QImage *image = fp2image("./pe256.jpg", Qt::yellow, Qt::black);
+  //QString fp = "./pe256.jpg";
+  QString fp = "./p2_16gray_160_100.jpg";
+  QImage image;
+  if (image.load(fp))
+    qDebug() << fp << " load ok";
+  print_mono_img(&image, RAW_DATA);
 
   //QString str=QString::fromUtf8("懷藝測試ABCDE");
   
+#if 0
   QImage *image = text2image(str, QFont(fam, size), Qt::yellow, Qt::black);
   print_mono_img(image, RENDER_TEXT);
   print_mono_img(image, RAW_DATA);
+#endif
 
   app.exit(0);
   //return app.exec();
