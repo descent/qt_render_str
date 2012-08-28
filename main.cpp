@@ -212,6 +212,10 @@ int main(int argc, char *argv[])
 
   QVector<QRgb> color_table = image.colorTable();
 
+  printf("// filename: %s\n", fp.toStdString().c_str());
+  printf("static int color_count = %d;\n", color_table.size());
+  printf("static u8 palette_data[]=\n");
+  printf("{\n");
   for (int i=0 ; i < color_table.size() ; ++i)
   {
     //qDebug() << color_table[i];
@@ -220,17 +224,32 @@ int main(int argc, char *argv[])
     r = (c >> 16) & 0xff;
     g = (c >> 8) & 0xff;
     b = c & 0xff;
-    printf("i: %d ## %08x\n", i, c);
+    //printf("i: %d ## %08x\n", i, c);
     #if 1
+    #if 0
     printf("r: %#02x\n", r);
     printf("g: %#02x\n", g);
     printf("b: %#02x\n", b);
+    #endif
+
+#if 0
+    printf(".byte %#02x, ", r);
+    printf("%#02x, ", g);
+    printf("%#02x\n", b);
+#else
+    printf("/* %03d */ ", i);
+    printf("%#02x, ", r/4);
+    printf("%#02x, ", g/4);
+    printf("%#02x,\n", b/4);
+
+#endif
     #else
     printf(".byte %#02x, ", b);
     printf("%#02x, ", g);
     printf("%#02x\n", r);
     #endif
   }
+  printf("};\n");
 
 #if 0
   DrawWidget draw_widget;
