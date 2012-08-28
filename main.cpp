@@ -12,6 +12,7 @@
 
 #include <unistd.h>
 
+#include "draw_widget.h"
 
 typedef unsigned char u8;
 typedef unsigned short u16;
@@ -159,7 +160,8 @@ int main(int argc, char *argv[])
   QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 
 
-  while ((opt = getopt(argc, argv, "f:t:s:h?")) != -1)
+  QString fp;
+  while ((opt = getopt(argc, argv, "p:f:t:s:h?")) != -1)
   {
     switch (opt)
     {
@@ -170,6 +172,11 @@ int main(int argc, char *argv[])
       case 't':
         str=QString::fromUtf8(optarg);
         break;
+      case 'p':
+      {
+        fp = optarg;
+        break;
+      }
       case 'f':
       {
         //fam = optarg;
@@ -198,12 +205,38 @@ int main(int argc, char *argv[])
 
   //QImage *image = fp2image("./pe256.jpg", Qt::yellow, Qt::black);
   //QString fp = "./pe256.jpg";
-  QString fp = "./p2_16gray_160_100.jpg";
   QImage image;
-  if (image.load(fp))
+  if (image.load(fp), QImage::Format_Indexed8)
     qDebug() << fp << " load ok";
   print_mono_img(&image, RAW_DATA);
 
+  QVector<QRgb> color_table = image.colorTable();
+
+  for (int i=0 ; i < color_table.size() ; ++i)
+  {
+    //qDebug() << color_table[i];
+    unsigned int c = color_table[i];
+    unsigned char r, g, b;
+    r = (c >> 16) & 0xff;
+    g = (c >> 8) & 0xff;
+    b = c & 0xff;
+    printf("i: %d ## %08x\n", i, c);
+    #if 1
+    printf("r: %#02x\n", r);
+    printf("g: %#02x\n", g);
+    printf("b: %#02x\n", b);
+    #else
+    printf(".byte %#02x, ", b);
+    printf("%#02x, ", g);
+    printf("%#02x\n", r);
+    #endif
+  }
+
+#if 0
+  DrawWidget draw_widget;
+  draw_widget.set_image_fp(fp);
+  draw_widget.show();
+#endif
   //QString str=QString::fromUtf8("懷藝測試ABCDE");
   
 #if 0
@@ -212,7 +245,10 @@ int main(int argc, char *argv[])
   print_mono_img(image, RAW_DATA);
 #endif
 
+#if 1
   app.exit(0);
-  //return app.exec();
+#else
+  return app.exec();
+#endif
 }
 
