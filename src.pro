@@ -1,7 +1,9 @@
 TEMPLATE = app
 
-SOURCES += main.cpp
-HEADERS  += 
+SOURCES += main.cpp \
+draw_widget.cpp 
+HEADERS  +=  \
+draw_widget.h
         
 CONFIG += console
 
