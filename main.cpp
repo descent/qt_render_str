@@ -142,12 +142,16 @@ void print_mono_img(const QImage *img, int type)
 
 void usage(const char* fn)
 {
+  printf("generate raw data for string or image\n");
   printf("%s -s font size -t str\n", fn);
+  printf("%s -s font size -f text_path(utf8 encoding)\n", fn);
+  printf("%s -p image_path\n", fn);
   printf("  ex:\n");
   printf("    %s -s 30 -t \"abc\"\n", fn);
   printf("qt version: %s\n", qVersion());
   exit(-1);
 }
+
 
 int main(int argc, char *argv[])
 {
@@ -158,13 +162,21 @@ int main(int argc, char *argv[])
   QString str=QString::fromUtf8("A");
   QString fam = "FreeMono";
   QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+  enum FileType{TEXT, IMAGE};
+  FileType ft = TEXT;
+  QString wfp;
 
 
   QString fp;
-  while ((opt = getopt(argc, argv, "p:f:t:s:h?")) != -1)
+  while ((opt = getopt(argc, argv, "w:p:f:t:s:h?")) != -1)
   {
     switch (opt)
     {
+      case 'w':
+      {
+        wfp = optarg;
+        break;
+      }
       case 's':
         //translator_fp = QString(optarg);
         size = strtol(optarg, 0, 10);
@@ -174,6 +186,7 @@ int main(int argc, char *argv[])
         break;
       case 'p':
       {
+        ft = IMAGE;
         fp = optarg;
         break;
       }
@@ -203,10 +216,23 @@ int main(int argc, char *argv[])
     }
   }
 
-  //QImage *image = fp2image("./pe256.jpg", Qt::yellow, Qt::black);
-  //QString fp = "./pe256.jpg";
+  switch (ft)
+  {
+    case TEXT:
+    {
+#if 1
+  QImage *image = text2image(str, QFont(fam, size), Qt::yellow, Qt::black);
+  print_mono_img(image, RENDER_TEXT);
+  print_mono_img(image, RAW_DATA);
+#endif
+      break;
+    }
+    case IMAGE:
+    {
+
   QImage image;
-  if (image.load(fp), QImage::Format_Indexed8)
+  //if (image.load(fp, QImage::Format_Indexed8) )
+  if (image.load(fp))
     qDebug() << fp << " load ok";
   print_mono_img(&image, RAW_DATA);
 
@@ -251,6 +277,15 @@ int main(int argc, char *argv[])
   }
   printf("};\n");
 
+
+
+      break;
+    }
+  }
+
+  //QImage *image = fp2image("./pe256.jpg", Qt::yellow, Qt::black);
+  //QString fp = "./pe256.jpg";
+
 #if 0
   DrawWidget draw_widget;
   draw_widget.set_image_fp(fp);
@@ -258,11 +293,6 @@ int main(int argc, char *argv[])
 #endif
   //QString str=QString::fromUtf8("懷藝測試ABCDE");
   
-#if 0
-  QImage *image = text2image(str, QFont(fam, size), Qt::yellow, Qt::black);
-  print_mono_img(image, RENDER_TEXT);
-  print_mono_img(image, RAW_DATA);
-#endif
 
 #if 1
   app.exit(0);
