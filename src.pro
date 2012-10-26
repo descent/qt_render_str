@@ -1,4 +1,5 @@
 TEMPLATE = app
+TARGET = qt_render_str
 
 SOURCES += main.cpp \
 draw_widget.cpp 
